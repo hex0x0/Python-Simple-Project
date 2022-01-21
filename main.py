@@ -93,6 +93,16 @@ def listarProdutos():
     except:
         print("Erro ao conectar com o banco")
 
+
+    for p in produtosCadastrados:
+        produtos.append(p)
+
+    if len(produtos) != 0:
+        for i in range(0, len(produtos)):
+            print(produtos[i])
+    else:
+        print("Não existem produtos")
+
 autentico = False
 
 
@@ -119,8 +129,10 @@ if autentico:
 
 
     while decisaoUsuario != 0:
-        decisaoUsuario = int(input("Sair (0) ------ Cadastrar Produtos (1) : "))
+        decisaoUsuario = int(input("Sair (0) ------ Cadastrar Produtos (1) ---- Listar Produtos(2) : "))
 
 
         if decisaoUsuario == 1:
             cadastrarProdutos()
+        elif decisaoUsuario == 2:
+            listarProdutos()
