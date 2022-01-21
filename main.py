@@ -103,6 +103,16 @@ def listarProdutos():
     else:
         print("Não existem produtos")
 
+def excluirProduto():
+    idDeletar=int(input("Digite o id do produto a ser deletado: "))
+
+    try:
+        with db.cursor() as c:
+            c.execute("DELETE FROM produtos where id = {}".format(idDeletar))
+
+    except:
+        print("Erro ao conectar com o banco")
+
 autentico = False
 
 
@@ -136,3 +146,8 @@ if autentico:
             cadastrarProdutos()
         elif decisaoUsuario == 2:
             listarProdutos()
+
+            deletar = int(input("Digite (1) Excluir produto ou (2) Sair: "))
+
+            if deletar == 1:
+                excluirProduto()
