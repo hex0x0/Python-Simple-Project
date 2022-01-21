@@ -31,16 +31,20 @@ def logarCadastrar(decisao):
 
         for linha in ret:
             if nome == linha[0] and senha == linha[1]:
+                print(linha[0] + "  - " +  linha[1] +  " - " + '{}'.format(linha[2]))
                 if linha[2] == 1:
                     usuarioMaster = False
                 elif linha[2] == 2:
                     usuarioMaster = True
                 autenticado = True
+                break
             else:
                 autenticado = False
 
         if not autenticado:
             print("Email ou senha errados")
+        else:
+            print("Autenticado com sucesso")
     elif decisao == 2:
         print("Faca seu cadastro ")
         nome = input("Digite seu nome: ")
@@ -62,8 +66,32 @@ def logarCadastrar(decisao):
 
     return autenticado, usuarioMaster
 
+def cadastrarProdutos():
+    nome = input("Digite o nome do produto: ")
+    ingredientes = input("Digite o ingrediente dos produtos: ")
+    grupo = input("Digite o grupo deste produto: ")
+    preco = float(input("Digite o preco do produto: "))
 
+    """
+        try pra tratar os erros decorrentes da conexão com o banco
+    """
+    try:
+        with db.cursor() as c:
+            c.execute("INSERT INTO produtos (nome, ingredientes, grupo, preco) values(%s, %s, %s, %s)", (nome, ingredientes, grupo, preco))
+            db.commit()
+            print("Produto cadastrado com sucesso!")
+    except:
+        print("Erro ao cadastrar produtos")
 
+def listarProdutos():
+    produtos = []
+
+    try:
+        with db.cursor() as c:
+            c.execute("SELECT * from produtos")
+            produtosCadastrados = c.fetchall()
+    except:
+        print("Erro ao conectar com o banco")
 
 autentico = False
 
@@ -80,4 +108,19 @@ while not autentico:
 
     autentico, usuarioSupremo = logarCadastrar(decisao)
 
+if autentico:
+    print("Bem vindo!")
 
+    """
+    usuarioSupremo = True
+    Cadastra apenas se for admin do banco
+    """
+    decisaoUsuario = 1
+
+
+    while decisaoUsuario != 0:
+        decisaoUsuario = int(input("Sair (0) ------ Cadastrar Produtos (1) : "))
+
+
+        if decisaoUsuario == 1:
+            cadastrarProdutos()
