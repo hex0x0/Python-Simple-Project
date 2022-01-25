@@ -1,5 +1,5 @@
 import mysql.connector
-
+import matplotlib.pyplot as plt
 
 db = mysql.connector.connect(
     host="",
@@ -83,6 +83,7 @@ def cadastrarProdutos():
     except:
         print("Erro ao cadastrar produtos")
 
+
 def listarProdutos():
     produtos = []
 
@@ -113,6 +114,68 @@ def excluirProduto():
     except:
         print("Erro ao conectar com o banco")
 
+def listarPedidos():
+    pedidos = []
+    decision = 0
+
+    while decision != 2:
+        pedidos.clear()
+
+        try:
+            with db.cursor() as c:
+                c.execute("SELECT * FROM pedidos")
+                listaPedidos = c.fetchall()
+        except:
+            print("Conexao abortada")
+
+def gerarRelatorios():
+    nomeProdutos  = []
+    nomeProdutos.clear()
+
+    try:
+        with db.cursor() as c:
+            c.execute("SELECT * FROM produtos")
+            produtos = c.fetchall()
+    except:
+        print("Erro ao fazer consulta")
+
+
+    try:
+        with db.cursor() as c:
+            c.execute("SELECT * FROM estatisticavendido")
+            vendidos = c.fetchall()
+    except:
+        print("Erro ao fazer consulta")
+
+    state = int(input("Digite 0 para sair, 1 para pesquisar por nome e 2 para pesquisar por grupo: "))
+
+    if state == 1:
+        dc = int(input("Digite um para pesquisar por preco e 2 por quantidade unitaria: "))
+        if dc == 1:
+            for i in produtos:
+                nomeProdutos.append(i[1])
+
+
+            valores = []
+            valores.clear()
+
+            for h in range(0, len(nomeProdutos)):
+                somaValor = -1
+                for i in vendidos:
+                    if i[0] == nomeProdutos[h]:
+                        somaValor+=i[2]
+
+                if somaValor == -1:
+                    valores.append(0)
+                elif somaValor > 0:
+                    valores.append(somaValor + 1)
+        plt.plot(nomeProdutos, valores)
+        plt.ylabel('Quantidade vendida em reais')
+        plt.xlabel('Produtos')
+        plt.show()
+
+
+
 autentico = False
 
 
@@ -139,7 +202,7 @@ if autentico:
 
 
     while decisaoUsuario != 0:
-        decisaoUsuario = int(input("Sair (0) ------ Cadastrar Produtos (1) ---- Listar Produtos(2) : "))
+        decisaoUsuario = int(input("Sair (0) ------ Cadastrar Produtos (1) ---- Listar Produtos(2)  --- Gerar estatistica (3): "))
 
 
         if decisaoUsuario == 1:
@@ -151,3 +214,5 @@ if autentico:
 
             if deletar == 1:
                 excluirProduto()
+        elif decisaoUsuario == 3:
+            gerarRelatorios()
