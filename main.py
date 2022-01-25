@@ -144,6 +144,7 @@ def gerarRelatorios():
         with db.cursor() as c:
             c.execute("SELECT * FROM estatisticavendido")
             vendidos = c.fetchall()
+            print(vendidos)
     except:
         print("Erro ao fazer consulta")
 
@@ -155,15 +156,15 @@ def gerarRelatorios():
             for i in produtos:
                 nomeProdutos.append(i[1])
 
-
+            print(nomeProdutos)
             valores = []
             valores.clear()
 
             for h in range(0, len(nomeProdutos)):
                 somaValor = -1
                 for i in vendidos:
-                    if i[0] == nomeProdutos[h]:
-                        somaValor+=i[2]
+                    if i[1] == nomeProdutos[h]:
+                        somaValor+=i[3]
 
                 if somaValor == -1:
                     valores.append(0)
